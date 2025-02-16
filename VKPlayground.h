@@ -15,10 +15,16 @@ namespace vkp
 
 
     protected:
+      void InitWindow();
+      void InitVulkan();
+      void CreateInstance();
+
       void InitApp();
+      void Cleanup();
 
     private:
-      GLFWwindow *glfwWindow = nullptr;
+      GLFWwindow *glfwWindow;
+      VkInstance vkInstance;
   };
 
 }
