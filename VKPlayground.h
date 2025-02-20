@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <optional>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -10,6 +11,16 @@
 
 namespace vkp 
 {
+
+  struct QueueFamilyIndices 
+  {
+    std::optional<uint32_t> graphicsFamily;
+
+    bool IsComplete()
+    {
+      return graphicsFamily.has_value();
+    }
+  };
 
   class VKApp 
   {
@@ -24,6 +35,9 @@ namespace vkp
       void CreateInstance();
       void PickPhysicalDevice();
       void InitDebugMessenger();
+      void CreateLogicalDevice();
+
+      QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
       std::vector<const char*> GetRequiredExtensions();
       bool CheckValidationLayersSupport();
@@ -36,7 +50,8 @@ namespace vkp
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
       VkDebugUtilsMessengerEXT debugMessenger;
-      VkPhysicalDevice vkDevice = VK_NULL_HANDLE;
+      VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
+      VkDevice vkDevice = VK_NULL_HANDLE;
   };
 
 }

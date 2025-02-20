@@ -63,6 +63,7 @@ namespace vkp
     InitVulkan();
     InitDebugMessenger();
     PickPhysicalDevice();
+    CreateLogicalDevice();
   }
 
   void VKApp::InitWindow()
@@ -98,7 +99,7 @@ namespace vkp
 
     VkApplicationInfo vkInfo{};
     vkInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    vkInfo.pApplicationName = "Hello Triangle";
+    vkInfo.pApplicationName = "Hello Vulkan";
     vkInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     vkInfo.pEngineName = "No Engine";
     vkInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -149,16 +150,21 @@ namespace vkp
     for (const auto& device : devices) {
       if (IsDeviceSuitable(device)) 
       {
-          vkDevice = device;
+          vkPhysicalDevice = device;
           break;
       }
     }
   
-    if (vkDevice == VK_NULL_HANDLE) {
+    if (vkPhysicalDevice == VK_NULL_HANDLE) {
       throw std::runtime_error("failed to find a suitable GPU!");
     }
 
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(vkPhysicalDevice, &deviceProperties);
+
+
     std::cout << "Physical device initialised." << std::endl;
+    std::cout << deviceProperties.deviceName << std::endl; 
   }
 
   void VKApp::InitDebugMessenger()
@@ -179,6 +185,11 @@ namespace vkp
     std::cout << "Debug callback initialised" << std::endl;
   }
 
+  void VKApp::CreateLogicalDevice()
+  {
+    
+  }
+
   std::vector<const char *> VKApp::GetRequiredExtensions()
   {
     uint32_t glfwExtensionCount = 0;
@@ -193,6 +204,35 @@ namespace vkp
     }
 
     return extensions;
+  }
+
+  QueueFamilyIndices VKApp::FindQueueFamilies(VkPhysicalDevice device)
+  {
+    uint32_t queueFamilyCount;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+
+    QueueFamilyIndices indices;
+
+    uint32_t i = 0;
+    for(const auto& queueFamily : queueFamilies)
+    {
+      if(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+      {
+        indices.graphicsFamily = i;
+      }
+
+      if (indices.IsComplete()) 
+      {
+        break;
+      } 
+
+      i++;
+    }
+
+    return indices;
   }
 
   bool VKApp::CheckValidationLayersSupport()
@@ -231,8 +271,9 @@ namespace vkp
 
   bool VKApp::IsDeviceSuitable(VkPhysicalDevice device)
   {
+    QueueFamilyIndices indices = FindQueueFamilies(device);
 
-    return true;
+    return indices.IsComplete();
   }
 
   void VKApp::Cleanup()
