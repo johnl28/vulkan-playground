@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 
 
+
+
 namespace vkp 
 {
 
@@ -21,6 +23,7 @@ namespace vkp
       void InitVulkan();
       void CreateInstance();
       void PickPhysicalDevice();
+      void InitDebugMessenger();
 
       std::vector<const char*> GetRequiredExtensions();
       bool CheckValidationLayersSupport();
@@ -32,6 +35,7 @@ namespace vkp
     private:
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
+      VkDebugUtilsMessengerEXT debugMessenger;
       VkPhysicalDevice vkDevice = VK_NULL_HANDLE;
   };
 
