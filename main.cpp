@@ -19,5 +19,6 @@ int main() {
   }
 
 
+  std::cout << "Application terminated successfully." << std::endl;
   return EXIT_SUCCESS;
 }
