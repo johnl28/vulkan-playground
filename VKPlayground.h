@@ -52,6 +52,8 @@ namespace vkp
       VkDebugUtilsMessengerEXT debugMessenger;
       VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
       VkDevice vkDevice = VK_NULL_HANDLE;
+
+      VkQueue graphicsQueue;
   };
 
 }

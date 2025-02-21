@@ -187,7 +187,32 @@ namespace vkp
 
   void VKApp::CreateLogicalDevice()
   {
+    QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(vkPhysicalDevice);
     
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (vkCreateDevice(vkPhysicalDevice, &createInfo, nullptr, &vkDevice) != VK_SUCCESS) {
+      throw std::runtime_error("failed to create logical device!");
+    }
+
   }
 
   std::vector<const char *> VKApp::GetRequiredExtensions()
@@ -278,11 +303,12 @@ namespace vkp
 
   void VKApp::Cleanup()
   {
+    vkDestroyDevice(vkDevice, nullptr);
+
     if (enableValidationLayers) 
     {
       DestroyDebugUtilsMessengerEXT(vkInstance, debugMessenger, nullptr);
     }
-
 
     vkDestroyInstance(vkInstance, nullptr);
 
