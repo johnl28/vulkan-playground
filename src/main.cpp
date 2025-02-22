@@ -17,7 +17,8 @@ int main() {
     std::cout << e.what() << std::endl;
     return EXIT_FAILURE;
   }
-
+  
+  vulkanApp.Cleanup();
 
   std::cout << "Application terminated successfully." << std::endl;
   return EXIT_SUCCESS;
