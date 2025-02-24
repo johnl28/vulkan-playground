@@ -1,14 +1,13 @@
 #pragma once
 
 namespace vkp {
-  const constexpr int WINDOW_WIDTH = 800;
-  const constexpr int WINDOW_HEIGHT = 600;
-
+  constexpr int WINDOW_WIDTH = 800;
+  constexpr int WINDOW_HEIGHT = 600;
 
 #ifdef NDEBUG
-  const bool enableValidationLayers = false;
+  constexpr bool enableValidationLayers = false;
 #else
-  const bool enableValidationLayers = true;
+  constexpr bool enableValidationLayers = true;
 #endif
 
 }
