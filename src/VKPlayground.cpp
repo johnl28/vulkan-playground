@@ -68,6 +68,8 @@ namespace vkp
       glfwPollEvents();
       DrawFrame();
     }
+
+    vkDeviceWaitIdle(vkDevice);
   }
 
   void VKApp::DrawFrame()
