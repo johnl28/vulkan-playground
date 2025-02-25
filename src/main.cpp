@@ -11,6 +11,9 @@ int main() {
   try 
   {
     vulkanApp.Run();
+
+    vulkanApp.Cleanup();
+    std::cout << "Application terminated successfully." << std::endl;
   } 
   catch (const std::exception &e)
   {
@@ -18,8 +21,6 @@ int main() {
     return EXIT_FAILURE;
   }
   
-  vulkanApp.Cleanup();
 
-  std::cout << "Application terminated successfully." << std::endl;
   return EXIT_SUCCESS;
 }
