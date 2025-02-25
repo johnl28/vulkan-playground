@@ -26,6 +26,13 @@ namespace vkp
       void CreateImageViews();
       void CreateRenderPass();
       void CreateGraphicsPipeline();
+      void CreateFramebuffers();
+      void CreateCommandPool();
+      void CreateCommandBuffer();
+      void CreateSyncObjects();
+
+      void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+      void DrawFrame();
       
       QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
       
@@ -55,11 +62,21 @@ namespace vkp
       VkSurfaceKHR surface;
       VkSwapchainKHR swapChain;
 
+      std::vector<VkFramebuffer> swapChainFramebuffers;
       std::vector<VkImageView> swapChainImageViews;
       std::vector<VkImage> swapChainImages;
       VkFormat swapChainImageFormat;
       VkExtent2D swapChainExtent;
+      VkRenderPass renderPass;
       VkPipelineLayout pipelineLayout;
+      VkPipeline graphicsPipeline;
+      VkCommandPool commandPool;
+      VkCommandBuffer commandBuffer;
+
+
+      VkSemaphore imageAvailableSemaphore;
+      VkSemaphore renderFinishedSemaphore;
+      VkFence inFlightFence;
   };
 
 
