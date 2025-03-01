@@ -28,6 +28,7 @@ namespace vkp
       void CreateGraphicsPipeline();
       void CreateFramebuffers();
       void CreateCommandPool();
+      void CreateVertexBuffer();
       void CreateCommandBuffer();
       void CreateSyncObjects();
 
@@ -47,6 +48,7 @@ namespace vkp
       VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
       VkShaderModule CreateShaderModule(const std::vector<char>& code);
+      uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties); 
 
       void InitApp();
 
@@ -73,6 +75,8 @@ namespace vkp
       VkCommandPool commandPool;
       VkCommandBuffer commandBuffer;
 
+      VkBuffer vertexBuffer;
+      VkDeviceMemory vertexBufferMemory;
 
       VkSemaphore imageAvailableSemaphore;
       VkSemaphore renderFinishedSemaphore;
