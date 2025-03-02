@@ -50,6 +50,8 @@ namespace vkp
       VkShaderModule CreateShaderModule(const std::vector<char>& code);
       uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties); 
 
+      void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
       void InitApp();
 
     private:
