@@ -29,6 +29,7 @@ namespace vkp
       void CreateFramebuffers();
       void CreateCommandPool();
       void CreateVertexBuffer();
+      void CreateIndexBuffer();
       void CreateCommandBuffer();
       void CreateSyncObjects();
 
@@ -80,6 +81,9 @@ namespace vkp
 
       VkBuffer vertexBuffer;
       VkDeviceMemory vertexBufferMemory;
+
+      VkBuffer indexBuffer;
+      VkDeviceMemory indexBufferMemory;
 
       VkSemaphore imageAvailableSemaphore;
       VkSemaphore renderFinishedSemaphore;

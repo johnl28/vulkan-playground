@@ -19,9 +19,14 @@
 namespace vkp 
 {
   const std::vector<Vertex> vertices = {
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
+    {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+  };
+
+  const std::vector<uint16_t> indices = {
+    0, 1, 2, 2, 3, 0
   };
 
   const std::vector<const char*> validationLayers = {
@@ -173,6 +178,7 @@ namespace vkp
     CreateCommandBuffer();
     CreateSyncObjects();
     CreateVertexBuffer();
+    CreateIndexBuffer();
   }
   
 
@@ -683,6 +689,27 @@ namespace vkp
     vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
   }
 
+  void VKApp::CreateIndexBuffer()
+  {
+    VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+    void* data;
+    vkMapMemory(vkDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, indices.data(), (size_t) bufferSize);
+    vkUnmapMemory(vkDevice, stagingBufferMemory);
+
+    CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+
+    CopyBuffer(stagingBuffer, indexBuffer, bufferSize);
+
+    vkDestroyBuffer(vkDevice, stagingBuffer, nullptr);
+    vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
+  }
+
   uint32_t VKApp::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
   {
     VkPhysicalDeviceMemoryProperties memProperties;
@@ -840,9 +867,10 @@ namespace vkp
     VkBuffer vertexBuffers[] = {vertexBuffer};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
     
 
-    vkCmdDraw(commandBuffer, static_cast<uint32_t>(vertices.size()), 1, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -1087,6 +1115,10 @@ namespace vkp
     }
 
     vkDestroySwapchainKHR(vkDevice, swapChain, nullptr);
+
+    vkDestroyBuffer(vkDevice, indexBuffer, nullptr);
+    vkFreeMemory(vkDevice, indexBufferMemory, nullptr);
+
     vkDestroyBuffer(vkDevice, vertexBuffer, nullptr);
     vkFreeMemory(vkDevice, vertexBufferMemory, nullptr);
   
