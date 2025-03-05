@@ -5,15 +5,16 @@ SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
 
-SRCS := $(wildcard $(SRC_DIR)/*.cpp)
-OBJS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+SRCS := $(shell find $(SRC_DIR) -type f -name "*.cpp")
+OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
 
 $(BIN_DIR)/VKPlayground: $(OBJS)
 	mkdir -p $(BIN_DIR)
 	clang++ $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	mkdir -p $(OBJ_DIR)
+	mkdir -p $(dir $@)  
 	clang++ $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
