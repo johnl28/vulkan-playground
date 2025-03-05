@@ -13,8 +13,8 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
-
 #include "constants.h"
+
 
 namespace vkp 
 {
@@ -136,6 +136,7 @@ namespace vkp
 
     presentInfo.pResults = nullptr; // Optional
 
+
     vkQueuePresentKHR(presentQueue, &presentInfo);
   }
 
@@ -148,6 +149,24 @@ namespace vkp
   {
     InitWindow();
     InitVulkan();
+
+
+    GuiInitInfo guiInitInfo{};
+    guiInitInfo.window = glfwWindow;
+    guiInitInfo.instance = vkInstance;
+    guiInitInfo.physicalDevice = vkPhysicalDevice;
+    guiInitInfo.device = vkDevice;
+    guiInitInfo.queueFamily = FindQueueFamilies(vkPhysicalDevice).graphicsFamily.value();
+    guiInitInfo.queue = graphicsQueue;
+    guiInitInfo.pipelineCache = VK_NULL_HANDLE;
+    guiInitInfo.descriptorPool = descriptorPool;
+    guiInitInfo.renderPass = renderPass;
+    guiInitInfo.minImageCount = 2;
+    guiInitInfo.imageCount = swapChainImages.size();
+    guiInitInfo.msaaSamples = VK_SAMPLE_COUNT_1_BIT;
+    guiInitInfo.allocator = nullptr;
+    guiInitInfo.checkVkResultFn = nullptr;
+    gui.Init(guiInitInfo);
   }
 
   void VKApp::InitWindow()
@@ -179,6 +198,7 @@ namespace vkp
     CreateSyncObjects();
     CreateVertexBuffer();
     CreateIndexBuffer();
+    CreateDescriptorPool();
   }
   
 
@@ -821,6 +841,30 @@ namespace vkp
       }
   }
 
+  void VKApp::CreateDescriptorPool()
+  {
+    VkDescriptorPoolSize pool_sizes[] =
+    {
+      { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER },
+    };
+
+    VkDescriptorPoolCreateInfo pool_info = {};
+    pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+    pool_info.maxSets = 0;
+
+    for (VkDescriptorPoolSize& pool_size : pool_sizes)
+        pool_info.maxSets += pool_size.descriptorCount;
+
+    pool_info.poolSizeCount = (uint32_t)sizeof(pool_sizes) / sizeof(VkDescriptorPoolSize);
+    pool_info.pPoolSizes = pool_sizes;
+
+    if(vkCreateDescriptorPool(vkDevice, &pool_info, nullptr, &descriptorPool) != VK_SUCCESS)
+    {
+      throw std::runtime_error("failed to create descriptor pool!");
+    }
+  }
+
   void VKApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) 
   {
     VkCommandBufferBeginInfo beginInfo{};
@@ -871,6 +915,8 @@ namespace vkp
     
 
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+
+    gui.Render(commandBuffer);
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -1094,6 +1140,9 @@ namespace vkp
 
   void VKApp::Cleanup()
   {
+    gui.Cleanup();
+
+    vkDestroyDescriptorPool(vkDevice, descriptorPool, nullptr);
     vkDestroySemaphore(vkDevice, imageAvailableSemaphore, nullptr);
     vkDestroySemaphore(vkDevice, renderFinishedSemaphore, nullptr);
     vkDestroyFence(vkDevice, inFlightFence, nullptr);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VKCore.h"
+#include "gui.h"
 
 
 namespace vkp 
@@ -32,6 +33,9 @@ namespace vkp
       void CreateIndexBuffer();
       void CreateCommandBuffer();
       void CreateSyncObjects();
+
+      void CreateDescriptorPool();
+
 
       void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
       void DrawFrame();
@@ -78,6 +82,7 @@ namespace vkp
       VkPipeline graphicsPipeline;
       VkCommandPool commandPool;
       VkCommandBuffer commandBuffer;
+      VkDescriptorPool descriptorPool;
 
       VkBuffer vertexBuffer;
       VkDeviceMemory vertexBufferMemory;
@@ -88,6 +93,9 @@ namespace vkp
       VkSemaphore imageAvailableSemaphore;
       VkSemaphore renderFinishedSemaphore;
       VkFence inFlightFence;
+
+      GUI gui;
+
   };
 
 
