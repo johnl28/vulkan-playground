@@ -28,3 +28,10 @@ for the best compatibility or performance.
 - [LunarG Vulkan SDK](https://www.lunarg.com/vulkan-sdk/)
 - [GLM](https://github.com/g-truc/glm)
 - [ImGUI](https://github.com/ocornut/imgui)
+
+
+# Build
+
+```bash
+sh build.sh && make test
+```
