@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VKCore.h"
+#include "VkpCore.h"
 #include "gui.h"
 
 
@@ -26,6 +26,7 @@ namespace vkp
       void CreateSwapChain();
       void CreateImageViews();
       void CreateRenderPass();
+      void CreateDescriptorSetLayout();
       void CreateGraphicsPipeline();
       void CreateFramebuffers();
       void CreateCommandPool();
@@ -33,10 +34,11 @@ namespace vkp
       void CreateIndexBuffer();
       void CreateCommandBuffer();
       void CreateSyncObjects();
-
+      void CreateUniformBuffers();
       void CreateDescriptorPool();
+      void CreateDescriptorSets();
 
-
+      void UpdateUniformBuffer(uint32_t currentImage);
       void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
       void DrawFrame();
       
@@ -61,6 +63,8 @@ namespace vkp
       void InitApp();
 
     private:
+      uint32_t currentFrame = 0;
+
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
       VkDebugUtilsMessengerEXT debugMessenger;
@@ -89,6 +93,13 @@ namespace vkp
 
       VkBuffer indexBuffer;
       VkDeviceMemory indexBufferMemory;
+
+      VkDescriptorSetLayout descriptorSetLayout;
+      std::vector<VkDescriptorSet> descriptorSets;
+
+      std::vector<VkBuffer> uniformBuffers;
+      std::vector<VkDeviceMemory> uniformBuffersMemory;
+      std::vector<void*> uniformBuffersMapped;
 
       VkSemaphore imageAvailableSemaphore;
       VkSemaphore renderFinishedSemaphore;
