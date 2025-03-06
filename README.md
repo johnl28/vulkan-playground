@@ -1,6 +1,6 @@
 # Vulkan Playground
 
-A playground for the Vulkan API. 
+A **playground** for the Vulkan API. 
 
 This repository is used for **learning** and **experimenting** purposes, which means that it **won't** be optimised 
 for the best compatibility or performance.
@@ -26,4 +26,5 @@ for the best compatibility or performance.
 
 - [GLFW](https://www.glfw.org/)
 - [LunarG Vulkan SDK](https://www.lunarg.com/vulkan-sdk/)
-
+- [GLM](https://github.com/g-truc/glm)
+- [ImGUI](https://github.com/ocornut/imgui)
