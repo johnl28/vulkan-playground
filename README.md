@@ -33,5 +33,9 @@ for the best compatibility or performance.
 # Build
 
 ```bash
-sh build.sh && make test
+chmod +x compile.sh
+```
+
+```bash
+./compile.sh && make test
 ```
