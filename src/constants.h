@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 
 namespace vkp {
   constexpr int WINDOW_WIDTH = 800;
@@ -10,6 +12,16 @@ namespace vkp {
 #else
   constexpr bool enableValidationLayers = true;
 #endif
+
+  inline const std::vector<const char*> deviceExtensions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+  };
+
+  inline const std::vector<const char*> validationLayers = {
+    "VK_LAYER_KHRONOS_validation"
+  };
+
+
 }
 
 
