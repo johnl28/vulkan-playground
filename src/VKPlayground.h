@@ -1,8 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include "VkpCore.h"
 #include "gui.h"
-
+#include "VkpDevice.h"
 
 namespace vkp 
 {
@@ -20,9 +22,8 @@ namespace vkp
       void InitVulkan();
       void CreateInstance();
       void CreateSurface();
-      void PickPhysicalDevice();
+      void InitDevice();
       void InitDebugMessenger();
-      void CreateLogicalDevice();
       void CreateSwapChain();
       void CreateImageViews();
       void CreateRenderPass();
@@ -64,6 +65,8 @@ namespace vkp
 
     private:
       uint32_t currentFrame = 0;
+
+      std::unique_ptr<VkpDevice> device;
 
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
