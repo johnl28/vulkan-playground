@@ -17,9 +17,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
 #include "constants.h"
-
 
 namespace vkp 
 {
@@ -34,13 +32,6 @@ namespace vkp
     0, 1, 2, 2, 3, 0
   };
 
-  const std::vector<const char*> validationLayers = {
-    "VK_LAYER_KHRONOS_validation"
-  };
-
-  const std::vector<const char*> deviceExtensions = {
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME
-  };
 
   static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -143,7 +134,7 @@ namespace vkp
     presentInfo.pResults = nullptr; // Optional
 
 
-    vkQueuePresentKHR(presentQueue, &presentInfo);
+    vkQueuePresentKHR(device->GetPresentQueue(), &presentInfo);
 
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
   }
@@ -194,8 +185,8 @@ namespace vkp
     CreateInstance();
     CreateSurface();
     InitDebugMessenger();
-    PickPhysicalDevice();
-    CreateLogicalDevice();
+    InitDevice();
+    //CreateLogicalDevice();
     CreateSwapChain(); 
     CreateImageViews();
     CreateRenderPass();
@@ -269,39 +260,16 @@ namespace vkp
     }
   }
 
-  void VKApp::PickPhysicalDevice()
+  void VKApp::InitDevice()
   {
-    uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(vkInstance, &deviceCount, nullptr);
+    device = std::make_unique<VkpDevice>(surface, deviceExtensions);
+    device->PickPhysicalDevice(vkInstance);
+    device->CreateLogicalDevice();
 
-    if(deviceCount == 0)
-    {
-      throw std::runtime_error("Failed to find GPUs with Vulkan support!");
-    }
-
-
-    std::vector<VkPhysicalDevice> devices(deviceCount);
-    vkEnumeratePhysicalDevices(vkInstance, &deviceCount, devices.data());
-
-    for (const auto& device : devices) 
-    {
-      if (IsDeviceSuitable(device)) 
-      {
-        vkPhysicalDevice = device;
-        break;
-      }
-    }
-  
-    if (vkPhysicalDevice == VK_NULL_HANDLE) {
-      throw std::runtime_error("failed to find a suitable GPU!");
-    }
-
-    VkPhysicalDeviceProperties deviceProperties;
-    vkGetPhysicalDeviceProperties(vkPhysicalDevice, &deviceProperties);
-
-
-    std::cout << "Physical device initialised." << std::endl;
-    std::cout << deviceProperties.deviceName << std::endl; 
+    vkPhysicalDevice = device->GetPhysicalDevice();
+    vkDevice = device->GetDevice();
+    
+    graphicsQueue = device->GetGraphicsQueue();
   }
 
   bool VKApp::IsDeviceSuitable(VkPhysicalDevice device)
@@ -1114,48 +1082,7 @@ namespace vkp
     std::cout << "Debug callback initialised" << std::endl;
   }
 
-  void VKApp::CreateLogicalDevice()
-  {
-    QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(vkPhysicalDevice);
-    
-    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-    auto uniqueQueueFamilies = queueFamilyIndices.ToSet();
-    
-    float queuePriority = 1.0f;
 
-    for (uint32_t queueFamily : uniqueQueueFamilies) 
-    {
-      VkDeviceQueueCreateInfo queueCreateInfo{};
-      queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-      queueCreateInfo.queueFamilyIndex = queueFamily;
-      queueCreateInfo.queueCount = 1;
-      queueCreateInfo.pQueuePriorities = &queuePriority;
-      queueCreateInfos.push_back(queueCreateInfo);
-    }
-
-
-    VkPhysicalDeviceFeatures deviceFeatures{};
-
-
-    VkDeviceCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
-    createInfo.pQueueCreateInfos = queueCreateInfos.data();
-    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());;
-    
-    createInfo.pEnabledFeatures = &deviceFeatures;
-
-    createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-    createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-
-    
-    if (vkCreateDevice(vkPhysicalDevice, &createInfo, nullptr, &vkDevice) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create logical device!");
-    }
-    
-    vkGetDeviceQueue(vkDevice, queueFamilyIndices.presentFamily.value(), 0, &presentQueue);
-    vkGetDeviceQueue(vkDevice, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
-  }
 
   std::vector<const char *> VKApp::GetRequiredExtensions()
   {

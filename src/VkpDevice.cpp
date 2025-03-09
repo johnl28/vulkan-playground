@@ -91,8 +91,8 @@ void VkpDevice::CreateLogicalDevice()
     throw std::runtime_error("failed to create logical device!");
   }
   
-  // vkGetDeviceQueue(device, queueFamilyIndices.presentFamily.value(), 0, &presentQueue);
-  // vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
+  vkGetDeviceQueue(device, queueFamilyIndices.presentFamily.value(), 0, &presentQueue);
+  vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
 }
 
 void VkpDevice::Cleanup()

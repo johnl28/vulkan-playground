@@ -14,6 +14,9 @@ namespace vkp {
       VkPhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
       VkDevice GetDevice() const { return device; }
 
+      VkQueue GetPresentQueue() const { return presentQueue; }
+      VkQueue GetGraphicsQueue() const { return graphicsQueue; }
+
       void PickPhysicalDevice(VkInstance instance);
       void CreateLogicalDevice();
 
@@ -33,6 +36,9 @@ namespace vkp {
       VkSurfaceKHR surface = VK_NULL_HANDLE;
       VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
       VkDevice device = VK_NULL_HANDLE;
+
+      VkQueue presentQueue = VK_NULL_HANDLE;
+      VkQueue graphicsQueue = VK_NULL_HANDLE;
   };
 }
 
