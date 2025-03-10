@@ -1,4 +1,4 @@
-#include "VKPlayground.h"
+#include "VkpApp.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -6,7 +6,7 @@
 
 int main() {
 
-  vkp::VKApp vulkanApp;
+  vkp::VkpApp vulkanApp;
 
   try 
   {

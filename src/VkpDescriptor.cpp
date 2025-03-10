@@ -1,5 +1,6 @@
 
 #include "VkpDescriptor.h"
+#include "constants.h"
 
 vkp::VkpDescriptor::VkpDescriptor()
 {

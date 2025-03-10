@@ -9,10 +9,10 @@
 namespace vkp 
 {
 
-  class VKApp 
+  class VkpApp 
   {
     public:
-      VKApp();
+      VkpApp();
       void Run();
       void Cleanup();
 

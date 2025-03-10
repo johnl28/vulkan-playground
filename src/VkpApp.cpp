@@ -1,4 +1,5 @@
-#include "VKPlayground.h"
+#include "VkpApp.h"
+#include "constants.h"
 
 #include <cstring>
 #include <string>
@@ -17,7 +18,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "constants.h"
 
 namespace vkp 
 {
@@ -67,7 +67,7 @@ namespace vkp
     }
   }
 
-  void VKApp::Run()
+  void VkpApp::Run()
   {
 
     while(!glfwWindowShouldClose(glfwWindow)) 
@@ -84,7 +84,7 @@ namespace vkp
     vkDeviceWaitIdle(vkDevice);
   }
 
-  void VKApp::DrawFrame()
+  void VkpApp::DrawFrame()
   {
     vkWaitForFences(vkDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
     vkResetFences(vkDevice, 1, &inFlightFence);
@@ -139,12 +139,12 @@ namespace vkp
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
   }
 
-  VKApp::VKApp()
+  VkpApp::VkpApp()
   {
     InitApp();
   }
 
-  void VKApp::InitApp()
+  void VkpApp::InitApp()
   {
     InitWindow();
     InitVulkan();
@@ -168,7 +168,7 @@ namespace vkp
     gui.Init(guiInitInfo);
   }
 
-  void VKApp::InitWindow()
+  void VkpApp::InitWindow()
   {
 
     glfwInit();
@@ -180,7 +180,7 @@ namespace vkp
     std::cout << "Window initialised!" << std::endl;
   }
 
-  void VKApp::InitVulkan()
+  void VkpApp::InitVulkan()
   {
     CreateInstance();
     CreateSurface();
@@ -204,7 +204,7 @@ namespace vkp
   }
   
 
-  void VKApp::CreateInstance()
+  void VkpApp::CreateInstance()
   {
 
     if(enableValidationLayers && !CheckValidationLayersSupport())
@@ -252,7 +252,7 @@ namespace vkp
     std::cout << "Vulkan instance created." << std::endl;
   }
 
-  void VKApp::CreateSurface()
+  void VkpApp::CreateSurface()
   {
     if (glfwCreateWindowSurface(vkInstance, glfwWindow, nullptr, &surface) != VK_SUCCESS) 
     {
@@ -260,7 +260,7 @@ namespace vkp
     }
   }
 
-  void VKApp::InitDevice()
+  void VkpApp::InitDevice()
   {
     device = std::make_unique<VkpDevice>(surface, deviceExtensions);
     device->PickPhysicalDevice(vkInstance);
@@ -272,7 +272,7 @@ namespace vkp
     graphicsQueue = device->GetGraphicsQueue();
   }
 
-  bool VKApp::IsDeviceSuitable(VkPhysicalDevice device)
+  bool VkpApp::IsDeviceSuitable(VkPhysicalDevice device)
   {
     QueueFamilyIndices indices = FindQueueFamilies(device);
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
@@ -287,7 +287,7 @@ namespace vkp
     return indices.IsComplete() && extensionsSupported && swapChainAdequate;
   }
 
-  bool VKApp::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+  bool VkpApp::CheckDeviceExtensionSupport(VkPhysicalDevice device)
   {
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -306,7 +306,7 @@ namespace vkp
     return requiredExtensions.empty();
   }
 
-  SwapChainSupportDetails VKApp::QuerySwapChainSupport(VkPhysicalDevice device)
+  SwapChainSupportDetails VkpApp::QuerySwapChainSupport(VkPhysicalDevice device)
   {
     SwapChainSupportDetails details;
 
@@ -333,7 +333,7 @@ namespace vkp
     return details;
   }
 
-  void VKApp::CreateSwapChain() 
+  void VkpApp::CreateSwapChain() 
   {
     SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(vkPhysicalDevice);
 
@@ -393,7 +393,7 @@ namespace vkp
 
   }
 
-  void VKApp::CreateImageViews()
+  void VkpApp::CreateImageViews()
   {
     swapChainImageViews.resize(swapChainImages.size());
 
@@ -423,7 +423,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateRenderPass()
+  void VkpApp::CreateRenderPass()
   {
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = swapChainImageFormat;
@@ -470,7 +470,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateDescriptorSetLayout()
+  void VkpApp::CreateDescriptorSetLayout()
   {
     VkDescriptorSetLayoutBinding uboLayoutBinding{};
     uboLayoutBinding.binding = 0;
@@ -490,7 +490,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateGraphicsPipeline()
+  void VkpApp::CreateGraphicsPipeline()
   {
     auto vertShaderCode = Utils::ReadShaderFile("media/shaders/main.vert.spv");
     auto fragShaderCode = Utils::ReadShaderFile("media/shaders/main.frag.spv");
@@ -646,7 +646,7 @@ namespace vkp
     vkDestroyShaderModule(vkDevice, vertShaderModule, nullptr);
   }
 
-  void VKApp::CreateFramebuffers()
+  void VkpApp::CreateFramebuffers()
   {
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
@@ -672,7 +672,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateCommandPool()
+  void VkpApp::CreateCommandPool()
   {
     QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(vkPhysicalDevice);
 
@@ -687,7 +687,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateVertexBuffer()
+  void VkpApp::CreateVertexBuffer()
   {
     
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
@@ -708,7 +708,7 @@ namespace vkp
     vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
   }
 
-  void VKApp::CreateIndexBuffer()
+  void VkpApp::CreateIndexBuffer()
   {
     VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
@@ -729,7 +729,7 @@ namespace vkp
     vkFreeMemory(vkDevice, stagingBufferMemory, nullptr);
   }
 
-  uint32_t VKApp::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
+  uint32_t VkpApp::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
   {
     VkPhysicalDeviceMemoryProperties memProperties;
     vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, &memProperties);
@@ -745,7 +745,7 @@ namespace vkp
     throw std::runtime_error("failed to find suitable memory type!");
   }
 
-  void VKApp::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
+  void VkpApp::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
   {
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -774,7 +774,7 @@ namespace vkp
     vkBindBufferMemory(vkDevice, buffer, bufferMemory, 0);
   }
 
-  void VKApp::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+  void VkpApp::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
   {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -810,7 +810,7 @@ namespace vkp
     vkFreeCommandBuffers(vkDevice, commandPool, 1, &commandBuffer);
   }
 
-  void VKApp::CreateCommandBuffer()
+  void VkpApp::CreateCommandBuffer()
   {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -824,7 +824,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateSyncObjects()
+  void VkpApp::CreateSyncObjects()
   {
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -840,7 +840,7 @@ namespace vkp
       }
   }
 
-  void VKApp::CreateUniformBuffers()
+  void VkpApp::CreateUniformBuffers()
   {
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
@@ -856,7 +856,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateDescriptorPool()
+  void VkpApp::CreateDescriptorPool()
   {
     VkDescriptorPoolSize pool_sizes[] =
     {
@@ -881,7 +881,7 @@ namespace vkp
     }
   }
 
-  void VKApp::CreateDescriptorSets()
+  void VkpApp::CreateDescriptorSets()
   {
     std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
     VkDescriptorSetAllocateInfo allocInfo{};
@@ -920,7 +920,7 @@ namespace vkp
     }
   }
 
-  void VKApp::UpdateUniformBuffer(uint32_t currentImage)
+  void VkpApp::UpdateUniformBuffer(uint32_t currentImage)
   {
     static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -938,7 +938,7 @@ namespace vkp
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
   }
 
-  void VKApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+  void VkpApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
   {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1000,7 +1000,7 @@ namespace vkp
     }
   }
 
-  VkSurfaceFormatKHR VKApp::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
+  VkSurfaceFormatKHR VkpApp::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
   {
     for (const auto& availableFormat : availableFormats) 
     {
@@ -1013,7 +1013,7 @@ namespace vkp
     return availableFormats[0];
   }
 
-  VkPresentModeKHR VKApp::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) 
+  VkPresentModeKHR VkpApp::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) 
   {
     for (const auto& availablePresentMode : availablePresentModes) 
     {
@@ -1026,7 +1026,7 @@ namespace vkp
     return VK_PRESENT_MODE_FIFO_KHR;
   }
 
-  VkExtent2D VKApp::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) 
+  VkExtent2D VkpApp::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) 
   {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) 
     {
@@ -1049,7 +1049,7 @@ namespace vkp
     }
   }
 
-  VkShaderModule VKApp::CreateShaderModule(const std::vector<char> &code)
+  VkShaderModule VkpApp::CreateShaderModule(const std::vector<char> &code)
   {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -1064,7 +1064,7 @@ namespace vkp
     return shaderModule;
   }
 
-  void VKApp::InitDebugMessenger()
+  void VkpApp::InitDebugMessenger()
   {
     if(!enableValidationLayers) return;
 
@@ -1084,7 +1084,7 @@ namespace vkp
 
 
 
-  std::vector<const char *> VKApp::GetRequiredExtensions()
+  std::vector<const char *> VkpApp::GetRequiredExtensions()
   {
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
@@ -1100,7 +1100,7 @@ namespace vkp
     return extensions;
   }
 
-  QueueFamilyIndices VKApp::FindQueueFamilies(VkPhysicalDevice device)
+  QueueFamilyIndices VkpApp::FindQueueFamilies(VkPhysicalDevice device)
   {
     uint32_t queueFamilyCount;
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -1136,7 +1136,7 @@ namespace vkp
     return indices;
   }
 
-  bool VKApp::CheckValidationLayersSupport()
+  bool VkpApp::CheckValidationLayersSupport()
   {
 
     uint32_t layerCount;
@@ -1171,7 +1171,7 @@ namespace vkp
   }
 
 
-  void VKApp::Cleanup()
+  void VkpApp::Cleanup()
   {
     gui.Cleanup();
 
