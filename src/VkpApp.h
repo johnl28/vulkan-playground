@@ -47,8 +47,6 @@ namespace vkp
       
       std::vector<const char*> GetRequiredExtensions();
       bool CheckValidationLayersSupport();
-      bool IsDeviceSuitable(VkPhysicalDevice device);
-      bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
 
       SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
       VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
@@ -60,6 +58,8 @@ namespace vkp
 
       void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
       void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+      void CleanupVulkan();
 
       void InitApp();
 

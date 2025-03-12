@@ -272,39 +272,8 @@ namespace vkp
     graphicsQueue = device->GetGraphicsQueue();
   }
 
-  bool VkpApp::IsDeviceSuitable(VkPhysicalDevice device)
-  {
-    QueueFamilyIndices indices = FindQueueFamilies(device);
-    bool extensionsSupported = CheckDeviceExtensionSupport(device);
 
-    bool swapChainAdequate = false;
-    if (extensionsSupported) 
-    {
-        SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
-        swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
-    }
 
-    return indices.IsComplete() && extensionsSupported && swapChainAdequate;
-  }
-
-  bool VkpApp::CheckDeviceExtensionSupport(VkPhysicalDevice device)
-  {
-    uint32_t extensionCount;
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
-
-    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
-
-    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
-
-    for (const auto& extension : availableExtensions) 
-    {
-      //std::cout << "Extension: " << extension.extensionName << "available" << std::endl;
-      requiredExtensions.erase(extension.extensionName);
-    }
-
-    return requiredExtensions.empty();
-  }
 
   SwapChainSupportDetails VkpApp::QuerySwapChainSupport(VkPhysicalDevice device)
   {
@@ -810,6 +779,8 @@ namespace vkp
     vkFreeCommandBuffers(vkDevice, commandPool, 1, &commandBuffer);
   }
 
+
+
   void VkpApp::CreateCommandBuffer()
   {
     VkCommandBufferAllocateInfo allocInfo{};
@@ -1175,6 +1146,15 @@ namespace vkp
   {
     gui.Cleanup();
 
+    CleanupVulkan();
+
+    glfwDestroyWindow(glfwWindow);
+
+    glfwTerminate();
+  }
+
+  void VkpApp::CleanupVulkan()
+  {
     vkDestroySemaphore(vkDevice, imageAvailableSemaphore, nullptr);
     vkDestroySemaphore(vkDevice, renderFinishedSemaphore, nullptr);
     vkDestroyFence(vkDevice, inFlightFence, nullptr);
@@ -1223,10 +1203,6 @@ namespace vkp
     vkDestroySurfaceKHR(vkInstance, surface, nullptr);
 
     vkDestroyInstance(vkInstance, nullptr);
-
-    glfwDestroyWindow(glfwWindow);
-
-    glfwTerminate();
   }
 
 }
