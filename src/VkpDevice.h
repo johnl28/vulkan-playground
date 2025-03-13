@@ -22,14 +22,14 @@ namespace vkp {
 
       void Cleanup();
 
-      QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
     private:
       bool IsDeviceSuitable(VkPhysicalDevice device);
       bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-      
+    
       SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-
+      QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+      
     private:
       std::vector<const char*> enabledDeviceExtensions;
 
