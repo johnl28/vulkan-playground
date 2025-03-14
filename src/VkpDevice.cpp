@@ -17,6 +17,12 @@ VkpDevice::~VkpDevice()
 
 }
 
+void VkpDevice::Init(VkInstance instance)
+{
+  PickPhysicalDevice(instance);
+  CreateLogicalDevice();
+}
+
 void VkpDevice::PickPhysicalDevice(VkInstance instance)
 {
   uint32_t deviceCount = 0;
@@ -94,6 +100,7 @@ void VkpDevice::CreateLogicalDevice()
   vkGetDeviceQueue(device, queueFamilyIndices.presentFamily.value(), 0, &presentQueue);
   vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
 }
+
 
 void VkpDevice::Cleanup()
 {

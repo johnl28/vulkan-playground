@@ -17,13 +17,13 @@ namespace vkp {
       VkQueue GetPresentQueue() const { return presentQueue; }
       VkQueue GetGraphicsQueue() const { return graphicsQueue; }
 
+      void Init(VkInstance instance);
+      void Cleanup();
+      
+      
+    private:
       void PickPhysicalDevice(VkInstance instance);
       void CreateLogicalDevice();
-
-      void Cleanup();
-
-
-    private:
       bool IsDeviceSuitable(VkPhysicalDevice device);
       bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
     
