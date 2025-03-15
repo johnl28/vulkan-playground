@@ -7,6 +7,7 @@
 
 #include "VkpDevice.h"
 #include "VkpSwapchain.h"
+#include "VkpRenderPass.h"
 
 namespace vkp 
 {
@@ -28,6 +29,7 @@ namespace vkp
       void InitDebugMessenger();
       void InitSwapchain();
       void CreateFramebuffers();
+
       void CreateRenderPass();
       void CreateDescriptorSetLayout();
       void CreateGraphicsPipeline();
@@ -68,6 +70,7 @@ namespace vkp
 
       std::unique_ptr<VkpDevice> device;
       std::unique_ptr<VkpSwapchain> swapchain;
+      std::unique_ptr<VkpRenderPass> renderPass;
 
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
@@ -81,7 +84,6 @@ namespace vkp
 
       std::vector<VkFramebuffer> swapChainFramebuffers;
 
-      VkRenderPass renderPass;
       VkPipelineLayout pipelineLayout;
       VkPipeline graphicsPipeline;
       VkCommandPool commandPool;

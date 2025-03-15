@@ -162,7 +162,7 @@ void VkpApp::InitGUI()
   guiInitInfo.queue = graphicsQueue;
   guiInitInfo.pipelineCache = VK_NULL_HANDLE;
   guiInitInfo.descriptorPool = descriptorPool;
-  guiInitInfo.renderPass = renderPass;
+  guiInitInfo.renderPass = renderPass->GetHandle();
   guiInitInfo.minImageCount = 2;
   guiInitInfo.imageCount = swapchain->GetImages().size();
   guiInitInfo.msaaSamples = VK_SAMPLE_COUNT_1_BIT;
@@ -296,49 +296,8 @@ void VkpApp::InitSwapchain()
 
 void VkpApp::CreateRenderPass()
 {
-  VkAttachmentDescription colorAttachment{};
-  colorAttachment.format = swapchain->GetImageFormat();
-  colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-
-  colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-  colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-
-  colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-  colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-
-  colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-  colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-  VkAttachmentReference colorAttachmentRef{};
-  colorAttachmentRef.attachment = 0;
-  colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-  VkSubpassDescription subpass{};
-  subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-  subpass.colorAttachmentCount = 1;
-  subpass.pColorAttachments = &colorAttachmentRef;
-
-  VkSubpassDependency dependency{};
-  dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-  dependency.dstSubpass = 0;
-  dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.srcAccessMask = 0;
-  dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-  dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-
-  VkRenderPassCreateInfo renderPassInfo{};
-  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-  renderPassInfo.attachmentCount = 1;
-  renderPassInfo.pAttachments = &colorAttachment;
-  renderPassInfo.subpassCount = 1;
-  renderPassInfo.pSubpasses = &subpass;
-  renderPassInfo.dependencyCount = 1;
-  renderPassInfo.pDependencies = &dependency;
-  
-  if (vkCreateRenderPass(vkDevice, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) 
-  {
-    throw std::runtime_error("failed to create render pass!");
-  }
+  renderPass = std::make_unique<VkpRenderPass>(device->GetDevice());
+  renderPass->Init(swapchain->GetImageFormat());
 
   std::cout << "Renderpass initialized." << std::endl;
 }
@@ -493,7 +452,7 @@ void VkpApp::CreateGraphicsPipeline()
   pipelineInfo.pStages = shaderStages;
   pipelineInfo.layout = pipelineLayout;
 
-  pipelineInfo.renderPass = renderPass;
+  pipelineInfo.renderPass = renderPass->GetHandle();
   pipelineInfo.subpass = 0;
 
   pipelineInfo.pVertexInputState = &vertexInputInfo;
@@ -535,7 +494,7 @@ void VkpApp::CreateFramebuffers()
 
     VkFramebufferCreateInfo framebufferInfo{};
     framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-    framebufferInfo.renderPass = renderPass;
+    framebufferInfo.renderPass = renderPass->GetHandle();
     framebufferInfo.attachmentCount = 1;
     framebufferInfo.pAttachments = attachments;
     framebufferInfo.width = swapchainExtent.width;
@@ -842,7 +801,7 @@ void VkpApp::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIn
 
   VkRenderPassBeginInfo renderPassInfo{};
   renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-  renderPassInfo.renderPass = renderPass;
+  renderPassInfo.renderPass = renderPass->GetHandle();
   renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
 
   renderPassInfo.renderArea.offset = {0, 0};
@@ -1002,8 +961,8 @@ void VkpApp::CleanupVulkan()
 
   vkDestroyPipeline(vkDevice, graphicsPipeline, nullptr);
   vkDestroyPipelineLayout(vkDevice, pipelineLayout, nullptr);
-  vkDestroyRenderPass(vkDevice, renderPass, nullptr);
 
+  renderPass->Cleanup();
   swapchain->Cleanup();
 
   for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
