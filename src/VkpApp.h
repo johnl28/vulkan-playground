@@ -4,7 +4,9 @@
 
 #include "VkpCore.h"
 #include "gui.h"
+
 #include "VkpDevice.h"
+#include "VkpSwapchain.h"
 
 namespace vkp 
 {
@@ -24,17 +26,17 @@ namespace vkp
       void CreateSurface();
       void InitDevice();
       void InitDebugMessenger();
-      void CreateSwapChain();
-      void CreateImageViews();
+      void InitSwapchain();
+      void CreateFramebuffers();
       void CreateRenderPass();
       void CreateDescriptorSetLayout();
       void CreateGraphicsPipeline();
-      void CreateFramebuffers();
       void CreateCommandPool();
       void CreateVertexBuffer();
       void CreateIndexBuffer();
       void CreateCommandBuffer();
       void CreateSyncObjects();
+
       void CreateUniformBuffers();
       void CreateDescriptorPool();
       void CreateDescriptorSets();
@@ -43,18 +45,15 @@ namespace vkp
       void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
       void DrawFrame();
       
-      QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
       
       std::vector<const char*> GetRequiredExtensions();
       bool CheckValidationLayersSupport();
 
-      SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-      VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-      VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-      VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
 
       VkShaderModule CreateShaderModule(const std::vector<char>& code);
-      uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties); 
+      
+      VkRect2D GetScissor(int32_t x = 0, int32_t y = 0); 
+      VkViewport GetViewport();
 
       void CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
       void CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -62,11 +61,13 @@ namespace vkp
       void CleanupVulkan();
 
       void InitApp();
+      void InitGUI();
 
     private:
       uint32_t currentFrame = 0;
 
       std::unique_ptr<VkpDevice> device;
+      std::unique_ptr<VkpSwapchain> swapchain;
 
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
@@ -77,13 +78,9 @@ namespace vkp
       VkQueue graphicsQueue;
       VkQueue presentQueue;
       VkSurfaceKHR surface;
-      VkSwapchainKHR swapChain;
 
       std::vector<VkFramebuffer> swapChainFramebuffers;
-      std::vector<VkImageView> swapChainImageViews;
-      std::vector<VkImage> swapChainImages;
-      VkFormat swapChainImageFormat;
-      VkExtent2D swapChainExtent;
+
       VkRenderPass renderPass;
       VkPipelineLayout pipelineLayout;
       VkPipeline graphicsPipeline;
