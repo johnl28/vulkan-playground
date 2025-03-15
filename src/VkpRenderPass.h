@@ -7,11 +7,16 @@ namespace vkp {
   class VkpRenderPass 
   {
     public:
-      VkpRenderPass();
+      VkpRenderPass(VkDevice _device);
       ~VkpRenderPass();
 
+      void Init(VkFormat format);
+      void Cleanup();
+      VkRenderPass GetHandle() const { return renderPass; }
+
     private:
-      
+      VkRenderPass renderPass;
+      VkDevice device;
   };
 
 } // namespace vkp
