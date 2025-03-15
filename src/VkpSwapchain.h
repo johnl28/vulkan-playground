@@ -1,4 +1,6 @@
 #pragma once
+#include "VkpCore.h"
+
 #include "vulkan/vulkan.h"
 
 #include <vector>
@@ -11,7 +13,7 @@ namespace vkp {
       VkpSwapchain(VkSurfaceKHR _surface);
       ~VkpSwapchain();
 
-      void InitSwapchain(VkPhysicalDevice physicalDevice, QueueFamilyIndices queueFamilyInidices, VkDevice device, VkExtent2D extent);
+      void Init(VkPhysicalDevice physicalDevice, VkDevice device, QueueFamilyIndices queueFamilyInidices, VkExtent2D prefferedExtent);
 
       VkSwapchainKHR GetHandle() const { return swapChain;}
       VkExtent2D GetExtent() const { return swapChainExtent; }

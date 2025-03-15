@@ -19,13 +19,13 @@ VkpSwapchain::~VkpSwapchain()
 
 }
 
-void VkpSwapchain::InitSwapchain(VkPhysicalDevice physicalDevice, QueueFamilyIndices queueFamilyInidices, VkDevice device, VkExtent2D wantedExtent)
+void VkpSwapchain::Init(VkPhysicalDevice physicalDevice, VkDevice device, QueueFamilyIndices queueFamilyInidices, VkExtent2D prefferedExtent)
 {
   SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(physicalDevice);
 
   VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
   VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
-  VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities, wantedExtent);
+  VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities, prefferedExtent);
 
   uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
   if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) 
