@@ -10,15 +10,18 @@ namespace vkp {
   class VkpSwapchain
   {
     public:
-      VkpSwapchain(VkSurfaceKHR _surface);
+      VkpSwapchain(VkDevice _device, VkSurfaceKHR _surface);
       ~VkpSwapchain();
 
-      void Init(VkPhysicalDevice physicalDevice, VkDevice device, QueueFamilyIndices queueFamilyInidices, VkExtent2D prefferedExtent);
+      void Init(VkPhysicalDevice physicalDevice, QueueFamilyIndices queueFamilyInidices, VkExtent2D prefferedExtent);
+      void Cleanup();
 
       VkSwapchainKHR GetHandle() const { return swapChain;}
-      VkExtent2D GetExtent() const { return swapChainExtent; }
+      VkFormat GetImageFormat() const {return swapChainImageFormat; }
 
-      const std::vector<VkFramebuffer> &GetFrameBuffers() const { return swapChainFramebuffers; }
+      const VkExtent2D& GetExtent() const { return swapChainExtent; }
+      
+      
       const std::vector<VkImageView> &GetImageViews() const { return swapChainImageViews; }
       const std::vector<VkImage> &GetImages() const { return swapChainImages; }
 
@@ -28,16 +31,17 @@ namespace vkp {
       VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
       VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities, VkExtent2D actualExtent);
 
+      void CreateImageViews();
 
     private:
       VkSurfaceKHR surface;
+      VkDevice device;
 
       VkSwapchainKHR swapChain;
 
       VkFormat swapChainImageFormat;
       VkExtent2D swapChainExtent;
 
-      std::vector<VkFramebuffer> swapChainFramebuffers;
       std::vector<VkImageView> swapChainImageViews;
       std::vector<VkImage> swapChainImages;
   };
