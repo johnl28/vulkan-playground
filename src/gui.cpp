@@ -14,7 +14,12 @@ void vkp::GUI::Init(GuiInitInfo initInfo)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+
+    ImGuiStyle* dst = &ImGui::GetStyle();
+    ImGui::StyleColorsDark(dst);
+    dst->Colors[ImGuiCol_TitleBg]                = ImVec4(1.0f, 0.1f, 0.04f, 1.00f);
+    dst->Colors[ImGuiCol_TitleBgActive]          = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
+    dst->Colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(1.0f, 0.00f, 0.00f, 0.51f);
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
