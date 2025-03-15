@@ -17,6 +17,9 @@ namespace vkp {
       VkQueue GetPresentQueue() const { return presentQueue; }
       VkQueue GetGraphicsQueue() const { return graphicsQueue; }
 
+      QueueFamilyIndices GetQueueFamilies() { return FindQueueFamilies(physicalDevice); }
+      uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) ;
+
       void Init(VkInstance instance);
       void Cleanup();
       
@@ -27,8 +30,8 @@ namespace vkp {
       bool IsDeviceSuitable(VkPhysicalDevice device);
       bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
     
-      SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
       QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
+      SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
       
     private:
       std::vector<const char*> enabledDeviceExtensions;
