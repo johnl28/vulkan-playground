@@ -1,10 +1,10 @@
 #pragma once
-#include "Utils.h"
 
 #include <set>
 #include <array>
 #include <vector>
 #include <optional>
+#include <filesystem>
 
 #include <glm/glm.hpp>
 
@@ -17,6 +17,9 @@
 
 namespace vkp 
 {
+
+  typedef std::filesystem::path VkpFilePath;
+
   struct QueueFamilyIndices 
   {
     std::optional<uint32_t> graphicsFamily;
