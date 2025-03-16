@@ -8,6 +8,7 @@
 #include "VkpDevice.h"
 #include "VkpSwapchain.h"
 #include "VkpRenderPass.h"
+#include "VkpPipeline.h"
 
 namespace vkp 
 {
@@ -29,10 +30,10 @@ namespace vkp
       void InitDebugMessenger();
       void InitSwapchain();
       void CreateFramebuffers();
+      void InitRenderPass();
 
-      void CreateRenderPass();
       void CreateDescriptorSetLayout();
-      void CreateGraphicsPipeline();
+      void InitGraphicsPipeline();
       void CreateCommandPool();
       void CreateVertexBuffer();
       void CreateIndexBuffer();
@@ -52,7 +53,7 @@ namespace vkp
       bool CheckValidationLayersSupport();
 
 
-      VkShaderModule CreateShaderModule(const std::vector<char>& code);
+
       
       VkRect2D GetScissor(int32_t x = 0, int32_t y = 0); 
       VkViewport GetViewport();
@@ -71,6 +72,7 @@ namespace vkp
       std::unique_ptr<VkpDevice> device;
       std::unique_ptr<VkpSwapchain> swapchain;
       std::unique_ptr<VkpRenderPass> renderPass;
+      std::unique_ptr<VkpPipeline> pipeline;
 
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
@@ -79,13 +81,11 @@ namespace vkp
       VkDevice vkDevice = VK_NULL_HANDLE;
 
       VkQueue graphicsQueue;
-      VkQueue presentQueue;
       VkSurfaceKHR surface;
 
       std::vector<VkFramebuffer> swapChainFramebuffers;
 
-      VkPipelineLayout pipelineLayout;
-      VkPipeline graphicsPipeline;
+
       VkCommandPool commandPool;
       VkCommandBuffer commandBuffer;
       VkDescriptorPool descriptorPool;
