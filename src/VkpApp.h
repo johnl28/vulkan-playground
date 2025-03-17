@@ -37,7 +37,7 @@ namespace vkp
       void CreateCommandPool();
       void CreateVertexBuffer();
       void CreateIndexBuffer();
-      void CreateCommandBuffer();
+      void CreateCommandBuffers();
       void CreateSyncObjects();
 
       void CreateUniformBuffers();
@@ -77,6 +77,7 @@ namespace vkp
       GLFWwindow *glfwWindow;
       VkInstance vkInstance;
       VkDebugUtilsMessengerEXT debugMessenger;
+
       VkPhysicalDevice vkPhysicalDevice = VK_NULL_HANDLE;
       VkDevice vkDevice = VK_NULL_HANDLE;
 
@@ -84,10 +85,10 @@ namespace vkp
       VkSurfaceKHR surface;
 
       std::vector<VkFramebuffer> swapChainFramebuffers;
+      std::vector<VkCommandBuffer> commandBuffers;
 
 
       VkCommandPool commandPool;
-      VkCommandBuffer commandBuffer;
       VkDescriptorPool descriptorPool;
 
       VkBuffer vertexBuffer;
@@ -103,9 +104,9 @@ namespace vkp
       std::vector<VkDeviceMemory> uniformBuffersMemory;
       std::vector<void*> uniformBuffersMapped;
 
-      VkSemaphore imageAvailableSemaphore;
-      VkSemaphore renderFinishedSemaphore;
-      VkFence inFlightFence;
+      std::vector<VkSemaphore> imageAvailableSemaphores;
+      std::vector<VkSemaphore> renderFinishedSemaphores;
+      std::vector<VkFence> inFlightFences;
 
       GUI gui;
 
