@@ -50,11 +50,9 @@ void VkpDevice::PickPhysicalDevice(VkInstance instance)
     throw std::runtime_error("failed to find a suitable GPU!");
   }
 
-  VkPhysicalDeviceProperties deviceProperties;
-  vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 
   std::cout << "Physical device initialised." << std::endl;
-  std::cout << deviceProperties.deviceName << std::endl; 
+  std::cout << GetPhysicalDeviceProps().deviceName << std::endl; 
 }
 
 void VkpDevice::CreateLogicalDevice()
@@ -105,6 +103,31 @@ void VkpDevice::CreateLogicalDevice()
 void VkpDevice::Cleanup()
 {
   vkDestroyDevice(device, nullptr);
+}
+
+const VkPhysicalDeviceProperties& VkpDevice::GetPhysicalDeviceProps()
+{
+  if(deviceProperties.deviceID == 0)
+  {
+    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+  }
+
+  return deviceProperties;
+}
+
+std::string VkpDevice::GetDeviceTypeName()
+{
+  auto deviceType = GetPhysicalDeviceProps().deviceType;
+
+  switch(deviceType)
+  {
+    case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU:
+      return "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
+    case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:
+      return "VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU";
+    default:
+      return "DEVICE_TYPE_OTHER";
+  }
 }
 
 bool VkpDevice::IsDeviceSuitable(VkPhysicalDevice device)

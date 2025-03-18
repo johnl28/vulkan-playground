@@ -22,6 +22,11 @@ namespace vkp {
 
       void Init(VkInstance instance);
       void Cleanup();
+
+      const VkPhysicalDeviceProperties& GetPhysicalDeviceProps();
+
+      std::string GetDeviceName() { return GetPhysicalDeviceProps().deviceName; }
+      std::string GetDeviceTypeName();
       
       
     private:
@@ -34,6 +39,8 @@ namespace vkp {
       SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
       
     private:
+      VkPhysicalDeviceProperties deviceProperties{};
+
       std::vector<const char*> enabledDeviceExtensions;
 
       VkSurfaceKHR surface = VK_NULL_HANDLE;
