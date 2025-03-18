@@ -4,6 +4,13 @@
 
 namespace vkp
 {
+
+  struct GuiGeneralInfo 
+  {
+    std::string DeviceName;
+    std::string DeviceType;
+  };
+
   struct GuiInitInfo 
   {
     GLFWwindow* window;
@@ -31,6 +38,14 @@ namespace vkp
       void Init(GuiInitInfo initInfo);
       void Render(VkCommandBuffer commandBuffer);
       void Cleanup();
+
+      void SetGeneralInfo(const GuiGeneralInfo& _generalInfo) { generalInfo = _generalInfo; }
+
+    private:
+      void RenderGeneralInfo();
+
+    private:
+      GuiGeneralInfo generalInfo;
 
   };
 }

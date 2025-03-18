@@ -45,19 +45,13 @@ void vkp::GUI::Init(GuiInitInfo initInfo)
 
 void vkp::GUI::Render(VkCommandBuffer commandBuffer)
 {
-  ImGuiIO& io = ImGui::GetIO(); 
-  
   ImGui_ImplVulkan_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
-  ImGui::Begin("Hello, Vulkan!");                          // Create a window called "Hello, world!" and append into it.
+  RenderGeneralInfo();
 
-  ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-  ImGui::End();
   ImGui::Render();
-
   auto raw_data = ImGui::GetDrawData();
   ImGui_ImplVulkan_RenderDrawData(raw_data, commandBuffer);
 
@@ -68,4 +62,17 @@ void vkp::GUI::Cleanup()
   ImGui_ImplVulkan_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
+}
+
+void vkp::GUI::RenderGeneralInfo()
+{
+  ImGuiIO& io = ImGui::GetIO(); 
+
+  ImGui::Begin("General Info");
+
+  ImGui::Text("Device: %s", generalInfo.DeviceName.c_str());
+  ImGui::Text("Device Type: %s", generalInfo.DeviceType.c_str());
+  ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+
+  ImGui::End();
 }
