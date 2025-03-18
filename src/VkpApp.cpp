@@ -171,6 +171,13 @@ void VkpApp::InitGUI()
   guiInitInfo.allocator = nullptr;
   guiInitInfo.checkVkResultFn = nullptr;
   gui.Init(guiInitInfo);
+
+  auto deviceProps = device->GetPhysicalDeviceProps();
+
+  gui.SetGeneralInfo({
+    .DeviceName = deviceProps.deviceName,
+    .DeviceType = device->GetDeviceTypeName()
+  });
 }
 
 void VkpApp::InitWindow()
